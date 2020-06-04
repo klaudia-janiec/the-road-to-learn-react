@@ -10,6 +10,15 @@ describe('App', () => {
     const div = document.createElement('div');
     ReactDOM.render(<App />, div);
   });
+
+  test('snapshots', () => {
+    const component = renderer.create(
+      <App></App>
+    );
+  
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
 
 describe('Search', () => {

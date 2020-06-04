@@ -141,10 +141,10 @@ class App extends Component {
         <div className="interactions">
           { isLoading
             ? <Loading />
-            : <Button
+            : <ButtonWithLoading
               onClick={() => this.fetchSearchTopstories(searchKey, page + 1)}>
               More
-              </Button>
+              </ButtonWithLoading>
           }
         </div>
       </div>
@@ -152,34 +152,17 @@ class App extends Component {
   }
 }
 
-class Search extends Component {
-  componentDidMount() {
-    this.input.focus();
-  }
-
-  render() {
-    const {
-      value,
-      onChange,
-      onSubmit,
-      children
-    } = this.props;
-
-    return (
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          value={value}
-          onChange={onChange}
-          ref={(node) => { this.input = node; }}
-        />
-        <button type="submit">
-          {children}
-        </button>
-      </form>
-    );
-  }
-}
+const Search = ({ value, onChange, onSubmit, children }) =>
+  <form onSubmit={onSubmit}>
+    <input
+      type="text"
+      value={value}
+      onChange={onChange}
+    />
+    <button type="submit">
+      {children}
+    </button>
+  </form>
 
 const Table = ({ list, onDismiss }) =>
   <div className="table">
@@ -235,6 +218,11 @@ Button.propTypes = {
 
 const Loading = () =>
   <div>Loading ...</div>
+
+const withLoading = (Component) => ({ isLoading, ...rest }) =>
+  isLoading ? <Loading /> : <Component { ...rest } />
+
+const ButtonWithLoading = withLoading(Button);
 
 export default App;
 
