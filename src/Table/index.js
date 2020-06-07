@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './index.css';
 import PropTypes from 'prop-types';
 import { SORTS } from '../constants';
 import Sort from '../Sort/index'
