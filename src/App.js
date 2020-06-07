@@ -20,6 +20,26 @@ const SORTS = {
   POINTS: list => sortBy(list, 'points').reverse(),
 };
 
+const updateSearchTopstoriesState = (hits, page) => (prevState) => {
+  const { searchKey, results } = prevState;
+  const oldHits = results && results[searchKey]
+    ? results[searchKey].hits
+    : [];
+  
+  const updatedHits = [
+    ...oldHits,
+    ...hits
+  ];
+
+  return {
+    results: {
+      ...results,
+      [searchKey]: { hits: updatedHits, page }
+    },
+    isLoading: false
+  };
+};
+
 class App extends Component {
 
   constructor(props) {
@@ -46,24 +66,8 @@ class App extends Component {
 
   setSearchTopstories(result) {
     const { hits, page } = result;
-    const { searchKey, results } = this.state;
-
-    const oldHits = results && results[searchKey]
-      ? results[searchKey].hits
-      : [];
-
-    const updatedHits = [
-      ...oldHits,
-      ...hits
-    ];
-
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: updatedHits, page }
-      },
-      isLoading: false
-    });
+    
+    this.setState(updateSearchTopstoriesState(hits, page));
   }
 
   fetchSearchTopstories(searchTerm, page) {
@@ -76,7 +80,7 @@ class App extends Component {
 
   componentDidMount() {
     const { searchTerm } = this.state;
-    this.setState({ searchKey: searchTerm });
+    this.setState(() => { return { searchKey: searchTerm } });
     this.fetchSearchTopstories(searchTerm, DEFAULT_PAGE);
   }
 
